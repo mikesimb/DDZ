@@ -19,10 +19,11 @@ bool CDDZ_Game::Initialize_Game()
 		Player[i] = new PlayerData;
 		Player[i]->PlayerStatue = 0;
 		Player[i]->Playeridentfy = pi_NONE;
+		Player[i]->PlayrHandCardCount = 0;
 	}
 	for (int j = 0; j < 54 ;j++ )
 	{
-		Card[j] = j + 1;
+		Card[j] = j ;
 	}
 	
 	return true;
@@ -45,14 +46,14 @@ void CDDZ_Game::StartGame()
 
 void CDDZ_Game::GetCardTypeandValue(int CardIndex, byte &CardType, byte &CardValue)
 {
-	CardType = CardIndex / 13;
-	CardValue = CardIndex % 13;
-	if ((CardType == 4) && (CardValue == 1))
+	CardType = Card[CardIndex] / 13;
+	CardValue = Card[CardIndex] % 13;
+	if ((CardType == 4) && (CardValue == 0))
 	{
 		CardType = 4;
 		CardValue = 0;
 	}
-	if ((CardType == 4) && (CardValue == 2))
+	if ((CardType == 4) && (CardValue == 1))
 	{
 		CardType =5;
 		CardValue = 0;
@@ -64,7 +65,8 @@ void CDDZ_Game::OutputCardinfo(int CardIndex)
 	if ((CardIndex < 0) || (CardIndex > 54)) return;
 	byte CardType, CardValue;
 	char c_CardType[10] = "";
-	GetCardTypeandValue(Card[CardIndex], CardType, CardValue);
+	GetCardTypeandValue(CardIndex, CardType, CardValue);
+	CardValue = CardValue + 1;
 	switch (CardType)
 	{
 	case 0:
@@ -119,14 +121,19 @@ void CDDZ_Game::refreshCards()
 void CDDZ_Game::SendCardtoPlayer(byte Playerindex)
 {
 	OutputDebugString("开始发牌\n");
-	for (int index = 0; index < 51; index++) {
+	for (int index = 0; index < 54; index++) {
+		//OutputCardinfo(index);
+		
 		int playnum = index % 3;
 		int player_cardnum = index / 3;
 		Player[playnum]->PlayerHandCard[player_cardnum] = Card[index];
+		Player[playnum]->PlayrHandCardCount++;
 	}
-	BottomCard[0] = Card[51];
-	BottomCard[1] = Card[52];
-	BottomCard[2] = Card[53];
+	
+	KeepBottomCards();
+	return;
+	
+
 	int c = 0;
 	OutputDebugString("玩家0：");
 	for ( c = 0; c < 21; c++)
@@ -147,4 +154,65 @@ void CDDZ_Game::SendCardtoPlayer(byte Playerindex)
 	}
 	OutputDebugString("玩家2\n");
 	OutputDebugString("结束发牌\n");
+}
+
+void CDDZ_Game::KeepBottomCards()
+{
+	BottomCard[0] = Card[51];
+	BottomCard[1] = Card[52];
+	BottomCard[2] = Card[53];
+}
+
+void CDDZ_Game::Fightforlandlord()
+{
+	//询问玩家0是否要地主
+	bool FightLandlord[3];
+	int flag = 0; //有几个玩家要地主
+	//第一轮询问玩家是否要地主
+	for (int i = 0; i < 3; i++)
+	{
+		if (rand() % 2 == 1)
+		{
+			FightLandlord[i] = true;
+			flag++;
+		}
+		else
+			FightLandlord[i] = false;
+	}
+	//如果要地主的玩家多于1个
+	if (flag > 1)
+	{
+		//做第二轮询问，只到第一个人
+		for (int i = 0; i < 3; i++)
+		{
+			if (FightLandlord[i])
+			{
+				if (rand() % 2 == 1)
+					FightLandlord[i] = true;
+				else
+					FightLandlord[i] = false;
+			}
+			break;
+			
+		}
+	}
+	//确定身份
+	for (int j = 0; j < 3; j++)
+	{
+
+		if (FightLandlord[j])
+		{
+			Player[j]->Playeridentfy = pi_Landlord;
+		}
+		else
+			Player[j]->Playeridentfy = pi_Peasant;
+
+	}
+		
+
+
+		
+
+	//如果都要地主再询问玩家1是否要地主
+	//如果还要那么久结束地主鬼玩家一
 }

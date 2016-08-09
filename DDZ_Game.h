@@ -10,6 +10,7 @@ typedef struct tgaPlayerData
 {
 	PlayerIdentfy Playeridentfy;  //这个代表了玩家在牌局里的
 	int PlayerHandCard[21];
+	int PlayrHandCardCount;
 	byte PlayerStatue;
 
 }PlayerData,*pPlayerData;
