@@ -6,7 +6,7 @@
 #include "DDZ.h"
 #include "DDZDlg.h"
 #include "afxdialogex.h"
-
+#include "DDZ_Game.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -64,6 +64,7 @@ BEGIN_MESSAGE_MAP(CDDZDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CDDZDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -152,3 +153,13 @@ HCURSOR CDDZDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CDDZDlg::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_DDZ_Game = new CDDZ_Game();
+	m_DDZ_Game->Initialize_Game();
+	m_DDZ_Game->StartGame();
+	m_DDZ_Game->SendCardtoPlayer(0);
+}

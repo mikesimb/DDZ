@@ -1,4 +1,20 @@
 #pragma once
+enum PlayerIdentfy
+{
+	pi_NONE = 0,
+	pi_Landlord,
+	pi_Peasant
+};
+
+typedef struct tgaPlayerData
+{
+	PlayerIdentfy Playeridentfy;  //这个代表了玩家在牌局里的
+	int PlayerHandCard[21];
+	byte PlayerStatue;
+
+}PlayerData,*pPlayerData;
+
+
 class CDDZ_Game
 {
 public:
@@ -7,6 +23,11 @@ public:
 	bool Initialize_Game();
 	//可以开始了
 	void  StartGame();
+
+	void GetCardTypeandValue(int CardIndex,byte &CardType, byte &CardValue);
+
+	void OutputCardinfo(int CardIndex);
+
 
 	void refreshCards();//洗牌
 
@@ -35,8 +56,8 @@ public:
 
 //作为斗地主首先具备开具的条件
 private:
-	DWORD Player[3];
-	byte  PlayerStatue[3];//三个人都已经准备好了
+	pPlayerData  Player[3];
+	int BottomCard[3];
 //有一副牌54张
 	byte  Card[54];
 
