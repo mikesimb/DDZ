@@ -162,4 +162,6 @@ void CDDZDlg::OnBnClickedButton1()
 	m_DDZ_Game->Initialize_Game();
 	m_DDZ_Game->StartGame();
 	m_DDZ_Game->SendCardtoPlayer(0);
+	m_DDZ_Game->Fightforlandlord();
+	m_DDZ_Game->FightforLandlordEnd();
 }

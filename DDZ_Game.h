@@ -6,12 +6,26 @@ enum PlayerIdentfy
 	pi_Peasant
 };
 
+enum GameState
+{
+	gs_NONE,//无状态
+	gs_Ready,//准备阶段
+	gs_refreshcards,//洗牌
+	gs_SendCardToPlayer,//发牌
+	gs_fightforLandlord,//叫地主
+	gs_Landlordgetcards,//地主拿底牌
+	gs_PlayerSendCard,//出牌
+	gs_End, //结束牌局
+	gs_calc //计算结果
+
+};
+
 typedef struct tgaPlayerData
 {
 	PlayerIdentfy Playeridentfy;  //这个代表了玩家在牌局里的
 	int PlayerHandCard[21];
 	int PlayrHandCardCount;
-	byte PlayerStatue;
+	bool PlayerStatue;
 
 }PlayerData,*pPlayerData;
 

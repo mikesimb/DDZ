@@ -9,6 +9,10 @@ CDDZ_Game::CDDZ_Game()
 
 CDDZ_Game::~CDDZ_Game()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		delete Player[i];
+	}
 }
 //初始化游戏内容
 bool CDDZ_Game::Initialize_Game()
@@ -165,42 +169,57 @@ void CDDZ_Game::KeepBottomCards()
 
 void CDDZ_Game::Fightforlandlord()
 {
+	srand((unsigned)time(0));
 	//询问玩家0是否要地主
-	bool FightLandlord[3];
 	int flag = 0; //有几个玩家要地主
 	//第一轮询问玩家是否要地主
 	for (int i = 0; i < 3; i++)
 	{
+		srand((unsigned)time(0));
 		if (rand() % 2 == 1)
 		{
-			FightLandlord[i] = true;
+			Player[i]->PlayerStatue = true;
 			flag++;
 		}
 		else
-			FightLandlord[i] = false;
+			Player[i]->PlayerStatue = false;
 	}
 	//如果要地主的玩家多于1个
 	if (flag > 1)
 	{
 		//做第二轮询问，只到第一个人
+		bool alreadyhaslord = false;
 		for (int i = 0; i < 3; i++)
 		{
-			if (FightLandlord[i])
+			if(alreadyhaslord)
 			{
-				if (rand() % 2 == 1)
-					FightLandlord[i] = true;
-				else
-					FightLandlord[i] = false;
+				Player[i]->PlayerStatue = false;
 			}
-			break;
-			
+			else
+			{
+				if (Player[i]->PlayerStatue)
+				{
+					srand((unsigned)time(0));
+					if (rand() % 2 == 1)
+					{
+						Player[i]->PlayerStatue = true;
+						alreadyhaslord = true;
+					}
+					else
+						Player[i]->PlayerStatue = false;
+				}
+			}
 		}
 	}
+}
+
+void CDDZ_Game::FightforLandlordEnd()
+{
 	//确定身份
 	for (int j = 0; j < 3; j++)
 	{
 
-		if (FightLandlord[j])
+		if (Player[j]->PlayerStatue)
 		{
 			Player[j]->Playeridentfy = pi_Landlord;
 		}
@@ -208,11 +227,32 @@ void CDDZ_Game::Fightforlandlord()
 			Player[j]->Playeridentfy = pi_Peasant;
 
 	}
+}
+
+void CDDZ_Game::LandlordGetBottomCards(byte Playerindex)
+{
+	for (int i = 0 ;i<3 ;i++)
+	{
+		if (Player[i]->Playeridentfy == pi_Landlord)
+		{
+			Player[i]->PlayerHandCard[18] = BottomCard[0];
+			Player[i]->PlayerHandCard[19] = BottomCard[1];
+			Player[i]->PlayerHandCard[20] = BottomCard[2];
+			Player[i]->PlayrHandCardCount += 3;
+			break;
+		}
 		
+	}
 
+}
 
-		
-
-	//如果都要地主再询问玩家1是否要地主
-	//如果还要那么久结束地主鬼玩家一
+void CDDZ_Game::StartGame_SendCard()
+{
+	//这里需要开始出牌了
+	//首先找到地主出牌
+	//询问地主出什么牌
+	//地主出牌结束
+	//找到下一个出牌的人
+	//询问下一个出牌的人
+	//出牌结束
 }
