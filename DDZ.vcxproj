@@ -188,6 +188,7 @@
     <ClInclude Include="DDZ.h" />
     <ClInclude Include="DDZDlg.h" />
     <ClInclude Include="DDZ_Game.h" />
+    <ClInclude Include="FileUtils.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="DDZ.cpp" />
     <ClCompile Include="DDZDlg.cpp" />
     <ClCompile Include="DDZ_Game.cpp" />
+    <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
