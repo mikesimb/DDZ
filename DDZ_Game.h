@@ -30,6 +30,32 @@ typedef struct tgaPlayerData
 }PlayerData,*pPlayerData;
 
 
+class CPLayer
+{
+public:
+	CPLayer() {};
+	~CPLayer() {};
+
+	PlayerIdentfy getPlayerIdentfy() { return m_Playeridentfy; };
+	void setPlayerIdentfy(PlayerIdentfy pi) { m_Playeridentfy = pi; };
+
+	void setPlayerHandCardCount(int count) { m_PlayerHandCardCount = count; };
+	int getPlayerHandCardCount() { return m_PlayerHandCardCount; };
+
+	void setPlayerStatue(bool ps) { m_PlayerStatue = ps; };
+	bool getPlayerStatue() { return m_PlayerStatue; }
+
+	int* getPlayerHandCard() { return &m_PlayerHandCard[0]; };
+
+private:
+	PlayerIdentfy m_Playeridentfy;
+	int           m_PlayerHandCard[21];
+	int           m_PlayerHandCardCount;
+	bool          m_PlayerStatue;
+};
+
+
+
 class CDDZ_Game
 {
 public:
@@ -71,7 +97,8 @@ public:
 
 //作为斗地主首先具备开具的条件
 private:
-	pPlayerData  Player[3];
+	//pPlayerData  Player[3];
+	CPLayer *  Player[3];
 	int BottomCard[3];
 //有一副牌54张
 	byte  Card[54];

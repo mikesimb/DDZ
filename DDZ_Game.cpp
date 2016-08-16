@@ -20,10 +20,13 @@ bool CDDZ_Game::Initialize_Game()
 	//首先初始化player
 	for (int i = 0;i < 3;i++)
 	{
-		Player[i] = new PlayerData;
-		Player[i]->PlayerStatue = 0;
-		Player[i]->Playeridentfy = pi_NONE;
-		Player[i]->PlayrHandCardCount = 0;
+		Player[i] = new CPLayer;
+		Player[i]->setPlayerStatue(0);
+		Player[i]->setPlayerIdentfy(pi_NONE);
+		Player[i]->setPlayerHandCardCount(0);
+// 		Player[i]->PlayerStatue = 0;
+// 		Player[i]->Playeridentfy = pi_NONE;
+// 		Player[i]->PlayrHandCardCount = 0;
 	}
 	for (int j = 0; j < 54 ;j++ )
 	{
@@ -39,10 +42,12 @@ void CDDZ_Game::StartGame()
 	//三人准备
 	for (int i = 0 ;i < 3 ;i++)
 	{
-		Player[i]->PlayerStatue = 1;
+		Player[i]->setPlayerStatue(1);
+		int* cards = Player[i]->getPlayerHandCard();
+		//Player[i]->PlayerStatue = 1;
 		for (int j = 0; j < 21; j++)
-			Player[i]->PlayerHandCard[j] = 0;
-		Player[i]->Playeridentfy = pi_NONE;
+			cards[j] = 0;
+			Player[i]->setPlayerIdentfy(pi_NONE);
 	}
 	//发牌
 	refreshCards();
@@ -130,8 +135,11 @@ void CDDZ_Game::SendCardtoPlayer(byte Playerindex)
 		
 		int playnum = index % 3;
 		int player_cardnum = index / 3;
-		Player[playnum]->PlayerHandCard[player_cardnum] = Card[index];
-		Player[playnum]->PlayrHandCardCount++;
+
+		int* cards = Player[playnum]->getPlayerHandCard();
+		cards[player_cardnum] = Card[index];
+		int cardcount = Player[playnum]->getPlayerHandCardCount();
+		Player[playnum]->setPlayerHandCardCount(++cardcount);
 	}
 	
 	KeepBottomCards();
@@ -142,19 +150,19 @@ void CDDZ_Game::SendCardtoPlayer(byte Playerindex)
 	OutputDebugString("玩家0：");
 	for ( c = 0; c < 21; c++)
 	{
-		OutputCardinfo(Player[0]->PlayerHandCard[c]);
+		OutputCardinfo(Player[0]->getPlayerHandCard()[c]);
 	}
 	OutputDebugString("玩家0\n");
 	OutputDebugString("玩家1：");
 	for ( c = 0; c < 21; c++)
 	{
-		OutputCardinfo(Player[1]->PlayerHandCard[c]);
+		OutputCardinfo(Player[1]->getPlayerHandCard()[c]);
 	}
 	OutputDebugString("玩家1\n");
 	OutputDebugString("玩家2：");
 	for ( c = 0; c < 21; c++)
 	{
-		OutputCardinfo(Player[2]->PlayerHandCard[c]);
+		OutputCardinfo(Player[2]->getPlayerHandCard()[c]);
 	}
 	OutputDebugString("玩家2\n");
 	OutputDebugString("结束发牌\n");
@@ -178,11 +186,11 @@ void CDDZ_Game::Fightforlandlord()
 		srand((unsigned)time(0));
 		if (rand() % 2 == 1)
 		{
-			Player[i]->PlayerStatue = true;
+			Player[i]->setPlayerStatue(true);
 			flag++;
 		}
 		else
-			Player[i]->PlayerStatue = false;
+			Player[i]->setPlayerStatue(false);
 	}
 	//如果要地主的玩家多于1个
 	if (flag > 1)
@@ -193,20 +201,20 @@ void CDDZ_Game::Fightforlandlord()
 		{
 			if(alreadyhaslord)
 			{
-				Player[i]->PlayerStatue = false;
+				Player[i]->setPlayerStatue(false);
 			}
 			else
 			{
-				if (Player[i]->PlayerStatue)
+				if (Player[i]->getPlayerStatue())
 				{
 					srand((unsigned)time(0));
 					if (rand() % 2 == 1)
 					{
-						Player[i]->PlayerStatue = true;
+						Player[i]->setPlayerStatue(true);
 						alreadyhaslord = true;
 					}
 					else
-						Player[i]->PlayerStatue = false;
+						Player[i]->setPlayerStatue(false);
 				}
 			}
 		}
@@ -219,12 +227,12 @@ void CDDZ_Game::FightforLandlordEnd()
 	for (int j = 0; j < 3; j++)
 	{
 
-		if (Player[j]->PlayerStatue)
+		if (Player[j]->getPlayerStatue())
 		{
-			Player[j]->Playeridentfy = pi_Landlord;
+			Player[j]->setPlayerIdentfy(pi_Landlord);
 		}
 		else
-			Player[j]->Playeridentfy = pi_Peasant;
+			Player[j]->setPlayerIdentfy(pi_Peasant);
 
 	}
 }
@@ -233,12 +241,14 @@ void CDDZ_Game::LandlordGetBottomCards(byte Playerindex)
 {
 	for (int i = 0 ;i<3 ;i++)
 	{
-		if (Player[i]->Playeridentfy == pi_Landlord)
+		if (Player[i]->getPlayerIdentfy() == pi_Landlord)
 		{
-			Player[i]->PlayerHandCard[18] = BottomCard[0];
-			Player[i]->PlayerHandCard[19] = BottomCard[1];
-			Player[i]->PlayerHandCard[20] = BottomCard[2];
-			Player[i]->PlayrHandCardCount += 3;
+			Player[i]->getPlayerHandCard()[18] = BottomCard[0];
+			Player[i]->getPlayerHandCard()[19] = BottomCard[1];
+			Player[i]->getPlayerHandCard()[20] = BottomCard[2];
+			int cardcount = Player[i]->getPlayerHandCardCount();
+			 cardcount += 3;
+			 Player[i]->setPlayerHandCardCount(cardcount);
 			break;
 		}
 		
