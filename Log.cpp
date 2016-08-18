@@ -12,6 +12,8 @@ CLog::CLog()
 
 CLog::~CLog()
 {
+
+	delete m_szFileName;
 }
 
 CLog* CLog::getInstance()
@@ -42,7 +44,9 @@ void CLog::InitializeLogFile()
 	sprintf_s(filename, MAX_PATH, "%s%s", curpath, timE);
 
 	setLogFilename(filename);
+	
 	OpenFile();
+	delete timeinfo;
 }
 
 void CLog::setLogFilename(char* pFilename)
@@ -107,16 +111,16 @@ void CLog::WriteLog(LPVOID lpBuffer, DWORD dwLength)
 		char timE[80];
 		time(&now);
 		localtime_s(timeinfo,&now);
-		strftime(timE, 80, "Data:\n%Y-%m-%d\nTime:\n%I:%M:%S\n", timeinfo);
-
-		WriteFile(m_hFile, "/xd/xa#-----------------------------", 32, &dwWriteLength, NULL);
-		WriteFile(m_hFile, temp, 19, &dwWriteLength, NULL);
-		WriteFile(m_hFile, "-----------------------------#/xd/xa", 32, &dwWriteLength, NULL);
-		WriteFile(m_hFile, lpBuffer, dwLength, &dwWriteLength, NULL);
-		WriteFile(m_hFile, "/xd/xa", 2, &dwWriteLength, NULL);
-
+		strftime(timE, 80, "%Y-%m-%d %I:%M:%S", timeinfo);
+		//首先确定LOG的格式 【时间】【日志等级】日志内容
+		//那我们限定每条日志的长度不能大于255;
+		char strLevel[10] = "Warning";
+		char Buffer[255];
+		ZeroMemory(Buffer, 255);
+		dwLength =sprintf_s(Buffer, 255, "[%s]  [%s]  %s\r\n ",timE,strLevel,lpBuffer);
+		WriteFile(m_hFile, Buffer, dwLength, &dwLength, NULL);
 		FlushFileBuffers(m_hFile);
-
+		delete timeinfo;
 	}
 }
 

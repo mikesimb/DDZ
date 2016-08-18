@@ -187,8 +187,10 @@ void CDDZDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CLog::getInstance()->InitializeLogFile();
-	CLog::getInstance()->WriteLog("kaksjfaksfj", 10);
-	delete CLog::getInstance();
+	CLog::getInstance()->WriteLog("kaksjfaksfj", 11);
+
+	CLog::getInstance()->WriteLog("上天啊上帝啊我治安和四代是发啊发顺丰", 11);
+//	delete CLog::getInstance();
 
 
 
@@ -196,7 +198,7 @@ void CDDZDlg::OnBnClickedButton3()
 	CZQString zl = "kkkkkkkk";
 
 	CZQString zl1 = "LLLLLLLL";
-	CZQString zl2 = zl1 + zl + "\n";
+	CZQString zl2 = zl1 + zl + "/n";
 	OutputDebugString((char*)(zl2));
 	if (zl1 == zl2)
 		OutputDebugString("zl1 == zl2");
