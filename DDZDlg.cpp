@@ -7,6 +7,8 @@
 #include "DDZDlg.h"
 #include "afxdialogex.h"
 #include "DDZ_Game.h"
+#include "FileUtils.h"
+#include "Log.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -65,6 +67,8 @@ BEGIN_MESSAGE_MAP(CDDZDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CDDZDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDDZDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CDDZDlg::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -164,4 +168,23 @@ void CDDZDlg::OnBnClickedButton1()
 	m_DDZ_Game->SendCardtoPlayer(0);
 	m_DDZ_Game->Fightforlandlord();
 	m_DDZ_Game->FightforLandlordEnd();
+}
+
+
+void CDDZDlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (FileExists("F:\\Key.txt"))
+		OutputDebugString("文件存在");
+	else
+		OutputDebugString("文件不存在");
+	
+}
+
+
+void CDDZDlg::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CLog::getInstance()->InitializeLogFile();
+	CLog::getInstance()->WriteLog("kaksjfaksfj", 10);
 }

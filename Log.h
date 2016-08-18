@@ -7,7 +7,8 @@ public:
 	CLog();
 	virtual ~CLog();
 	static CLog* getInstance();
-
+	void InitializeLogFile();//这个函数的目的就是确定日志文件的文件名称
+	void setLogFilename(char* pFilename);
 	bool OpenFile();
 	bool FileIsOpen();
 	void WriteLog(LPVOID lpBuffer,DWORD dwLength);

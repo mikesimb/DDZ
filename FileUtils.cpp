@@ -20,25 +20,9 @@
 bool FileExists(char* FileName)
 {
 	int Flags = GetFileAttributes(FileName);
-	if (Flags == INVALID_FILE_ATTRIBUTES)
+	if (Flags != INVALID_FILE_ATTRIBUTES)
 	{
-		if ((faSymLink & Flags) != 0)
-		{
-			if ((faDirectory & Flags) != 0)
-			{
-				return false;
-			}
-			else
-			{
-				HANDLE  handle = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, 0);
-				if (handle != INVALID_HANDLE_VALUE)
-				{
-					CloseHandle(handle);
-					return true;
-				}
-			}
-		}
-		return ((faDirectory & Flags) == 0);
+		return (Flags & FILE_ATTRIBUTE_DIRECTORY) == 0;
 	}
 #ifdef _DEBUG
 	unsigned long lastError = GetLastError();
@@ -49,3 +33,4 @@ bool FileExists(char* FileName)
 	return false;
 
 }
+

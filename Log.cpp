@@ -6,6 +6,7 @@ static CLog* g_log;
 CLog::CLog()
 {
 	m_hFile = INVALID_HANDLE_VALUE;
+	m_szFileName = new char[MAX_PATH];
 }
 
 
@@ -18,6 +19,35 @@ CLog* CLog::getInstance()
 	if (g_log == NULL)
 		g_log = new CLog();
 	return g_log;
+}
+
+void CLog::InitializeLogFile()
+{
+	char path[MAX_PATH];
+	GetModuleFileName(NULL, path, MAX_PATH);
+	//首先要获取到当前的模块文件路径
+	char drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+	_splitpath_s(path, drive, dir, fname, ext);
+	char curpath[MAX_PATH];
+	sprintf_s(curpath, MAX_PATH, "%s%s", drive, dir);
+	SetCurrentDirectory(curpath);
+	char filename[MAX_PATH];
+	//文件名是一个以日期为核心的文件名
+	time_t rawtime;
+	struct tm* timeinfo =new tm;
+	char timE[MAX_PATH];
+	time(&rawtime);
+	localtime_s(timeinfo,&rawtime);
+	strftime(timE, 80, "Log%Y-%m-%d.log", timeinfo);
+	sprintf_s(filename, MAX_PATH, "%s%s", curpath, timE);
+
+	setLogFilename(filename);
+	OpenFile();
+}
+
+void CLog::setLogFilename(char* pFilename)
+{
+	memcpy_s(m_szFileName, MAX_PATH, pFilename, MAX_PATH);
 }
 
 bool CLog::OpenFile()
@@ -59,10 +89,10 @@ bool CLog::FileIsOpen()
 {
 	if (m_hFile != INVALID_HANDLE_VALUE)
 	{
-		return false;
+		return true;
 	}
 	else
-		return true;
+		return false;
 }
 
 void CLog::WriteLog(LPVOID lpBuffer, DWORD dwLength)
