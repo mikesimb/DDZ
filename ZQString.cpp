@@ -433,12 +433,12 @@ int CZQString::Replace(char * lpszOld, char * lpszNew)
 				//插入替换数据
 				memcpy(lpszTarget, lpszNew, nReplacementLen * sizeof(char));
 				lpszStart = lpszTarget + nReplacementLen;
-				lpszStart[nBalance] = '\0';
+				lpszStart[nBalance] = CHRNIL;
 				nOldLength += (nReplacementLen - nSourceLen); //现有数据长度
 			}
 			lpszStart += lstrlen(lpszStart) + 1;
 		}
-		assert(m_pChData[nNewLength] == '\0');
+		assert(m_pChData[nNewLength] == CHRNIL);
 		GetData()->nDataLength = nNewLength;
 	}
 
@@ -483,7 +483,7 @@ int CZQString::Remove(char chrRemove)
 		}
 		pstrSource = _tcsinc(pstrSource);//++pstrSource
 	}
-	*pstrDest = '\0';
+	*pstrDest =CHRNIL;
 	int nCount = pstrSource - pstrDest; //比较变态的计算替换个数,
 	GetData()->nDataLength -= nCount;
 
@@ -496,7 +496,7 @@ void CZQString::TrimRight(char * lpszTargetList)
 	char* lpsz = m_pChData;
 	char* lpszLast = NULL;
 
-	while (*lpsz != '\0')
+	while (*lpsz !=CHRNIL)
 	{
 		if (_tcschr(lpszTargetList, *lpsz) != NULL)
 		{
@@ -510,7 +510,7 @@ void CZQString::TrimRight(char * lpszTargetList)
 
 	if (lpszLast != NULL)
 	{
-		*lpszLast = '\0';
+		*lpszLast =CHRNIL;
 		GetData()->nDataLength = lpszLast - m_pChData;
 	}
 }
@@ -521,7 +521,7 @@ void CZQString::TrimRight(char chTarget)
 	char* lpsz = m_pChData;
 	char* lpszLast = NULL;
 
-	while (*lpsz != '\0')
+	while (*lpsz !=CHRNIL)
 	{
 		if (*lpsz == chTarget)
 		{
@@ -535,7 +535,7 @@ void CZQString::TrimRight(char chTarget)
 
 	if (lpszLast != NULL)
 	{
-		*lpszLast = '\0';
+		*lpszLast =CHRNIL;
 		GetData()->nDataLength = lpszLast - m_pChData;
 	}
 
@@ -547,7 +547,7 @@ void CZQString::TrimRight()
 	char* lpsz = m_pChData;
 	char* lpszLast = NULL;
 
-	while (*lpsz != '\0')
+	while (*lpsz !=CHRNIL)
 	{
 		if (_istspace(*lpsz))
 		{
@@ -562,7 +562,7 @@ void CZQString::TrimRight()
 	if (lpszLast != NULL)
 	{
 		// truncate at trailing space start
-		*lpszLast = '\0';
+		*lpszLast =CHRNIL;
 		GetData()->nDataLength = lpszLast - m_pChData;
 	}
 }
@@ -576,7 +576,7 @@ void CZQString::TrimLeft(char * lpszTargets)
 	CopyBeforeWrite();
 	char* lpsz = m_pChData;
 
-	while (*lpsz != '\0')
+	while (*lpsz !=CHRNIL)
 	{
 		if (_tcschr(lpszTargets, *lpsz) == NULL)
 			break;
@@ -779,7 +779,7 @@ void CZQString::ReleaseBuffer(int nNewLength /*= -1*/)
 
 	assert(nNewLength <= GetData()->nAllocLength);
 	GetData()->nDataLength = nNewLength;
-	m_pChData[nNewLength] = '\0';
+	m_pChData[nNewLength] =CHRNIL;
 }
 
 char * CZQString::GetBufferSetLength(int nNewLength)
@@ -788,7 +788,7 @@ char * CZQString::GetBufferSetLength(int nNewLength)
 
 	GetBuffer(nNewLength);
 	GetData()->nDataLength = nNewLength;
-	m_pChData[nNewLength] = '\0';
+	m_pChData[nNewLength] =CHRNIL;
 	return m_pChData;
 }
 
@@ -800,7 +800,7 @@ void CZQString::FreeExtra()
 		CZQStringData* pOldData = GetData();
 		AllocBuffer(GetData()->nDataLength);
 		memcpy(m_pChData, pOldData->data(), pOldData->nDataLength * sizeof(TCHAR));
-		assert(m_pChData[GetData()->nDataLength] == '\0');
+		assert(m_pChData[GetData()->nDataLength] ==CHRNIL);
 		CZQString::Release(pOldData);
 	}
 	assert(GetData() != NULL);
@@ -906,7 +906,7 @@ void CZQString::Init()
 CZQStringData* CZQString::GetData() const
 {
 	assert(m_pChData != NULL);
-	return (CZQStringData*)(m_pChData - 1);
+	return ((CZQStringData*)m_pChData) - 1;
 }
 
 
@@ -934,7 +934,7 @@ void CZQString::AllocBuffer(int nLen)
 			pData->nAllocLength = nLen;
 		}
 		pData->nRefs = 1;
-		pData->data()[nLen] = '/0';
+		pData->data()[nLen] = CHRNIL;
 		pData->nDataLength = nLen;
 		m_pChData = pData->data();
 	}
@@ -1309,7 +1309,7 @@ void CZQString::ConcatInPlace(int nSrcLen, char * lpszSrcData)
 		memcpy(m_pChData + GetData()->nDataLength, lpszSrcData, nSrcLen * sizeof(TCHAR));
 		GetData()->nDataLength += nSrcLen;
 		assert(GetData()->nDataLength <= GetData()->nAllocLength);
-		m_pChData[GetData()->nDataLength] = '\0';
+		m_pChData[GetData()->nDataLength] = CHRNIL;
 	}
 }
 
@@ -1325,7 +1325,6 @@ CZQString operator+(const CZQString& string1, const CZQString& string2)
 
 CZQString operator+(const CZQString& string, char* lpsz)
 {
-	assert(lpsz == NULL);
 	assert(IsValidZQString(lpsz,CZQString::SafeStrlen(lpsz)));
 	CZQString s;
 	s.ConcatCopy(string.GetData()->nDataLength, string.m_pChData,
